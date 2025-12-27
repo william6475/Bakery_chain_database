@@ -15,6 +15,10 @@ WHERE YEAR(Delivery_date_time) * 100 + MONTH(Delivery_date_time) >= YEAR(CURDATE
 ORDER BY Delivery_ID;
 -- Deliveries filtered by date to find deliveries in curent or future months then delivery cost summed within subquery using sum and groupby on Item_cost * Item_quantity
 
+GRANT SELECT ON Bakery_stock.Delivery_cost_current_future_months TO 'Baker';
+GRANT SELECT ON Bakery_stock.Delivery_cost_current_future_months TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Delivery_cost_current_future_months TO 'Shop_assistant';
+
 -- Table storing the cost of deliveries from past months
 CREATE TABLE Delivery_cost_past_months(
 Delivery_ID MEDIUMINT UNSIGNED UNIQUE,
@@ -22,6 +26,10 @@ Delivery_cost DECIMAL(8,2),
 PRIMARY KEY(Delivery_ID),
 FOREIGN KEY (Delivery_ID) REFERENCES Deliveries(Delivery_ID)
 );
+
+GRANT SELECT ON Bakery_stock.Delivery_cost_past_months TO 'Baker';
+GRANT SELECT ON Bakery_stock.Delivery_cost_past_months TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Delivery_cost_past_months TO 'Shop_assistant';
 
 -- Insert the data from before the database was in use into the Delivery_cost_past_months table
 INSERT INTO Delivery_cost_past_months (Delivery_ID, Delivery_cost)
@@ -76,6 +84,8 @@ WHERE YEAR(Sale_date_time) * 100 + MONTH(Sale_date_time) >= YEAR(CURDATE()) * 10
 ORDER BY Sale_ID;
 -- Sales filtered by date to find sales in curent or future months then sale cost summed within subquery using sum and groupby on Sale_cost * Product_quantity
 
+GRANT SELECT ON Bakery_stock.Sale_cost_current_future_months TO 'Shop_assistant';
+
 -- Table storing the cost of sales from past months
 CREATE TABLE Sale_cost_past_months(
 Sale_ID INT UNSIGNED UNIQUE,
@@ -83,6 +93,8 @@ Sale_cost DECIMAL(8,2),
 PRIMARY KEY(Sale_ID, Sale_date_time),
 FOREIGN KEY (Sale_ID) REFERENCES Sales(Sale_ID)
 );
+
+GRANT SELECT ON Bakery_stock.Sale_cost_past_months TO 'Shop_assistant';
 
 -- Insert the data from before the database was in use into Sale_cost_past_months
 INSERT INTO Sale_cost_past_months (Sale_ID, Sale_cost)
@@ -144,6 +156,8 @@ SET Istock.Item_quantity = Istock.Item_quantity - Ingredient_usage_information.I
 WHERE Istock.Branch_ID = Branch_ID;
 END $$
 DELIMITER ;
+
+GRANT EXECUTE ON PROCEDURE Bakery_stock.Products_made TO 'Baker';
 
 /*Triggers to add delivered items to Item_stock once a delivery is delivered
 -----------------------------------------------------*/

@@ -1,7 +1,10 @@
-CREATE DATABASE bakery;
-USE bakery;
+CREATE DATABASE Bakery_stock;
+USE Bakery_stock;
 
--- Table for branches of the bakery chain
+/* Table creation statments
+--------------------------------------------------------------*/
+
+-- Table storing branches of the bakery chain
 CREATE TABLE Branches(
 Branch_ID SMALLINT UNSIGNED AUTO_INCREMENT,
 Branch_name VARCHAR(100) NOT NULL,
@@ -10,7 +13,7 @@ Branch_city VARCHAR(50),
 PRIMARY KEY (Branch_ID)
 );
 
--- Table of deliveries (Delivered and to be delivered)
+-- Table storing deliveries (Delivered and to be delivered)
 CREATE TABLE Deliveries(
 Delivery_ID MEDIUMINT UNSIGNED AUTO_INCREMENT,
 Branch_ID SMALLINT UNSIGNED NOT NULL,
@@ -20,7 +23,7 @@ PRIMARY KEY (Delivery_ID),
 FOREIGN KEY(Branch_ID) REFERENCES Branches(Branch_ID)
 );
 
--- Table of items which can be at branches
+-- Table storing items which can be at branches
 CREATE TABLE Inventory_items(
 Item_ID SMALLINT UNSIGNED AUTO_INCREMENT,
 Item_name VARCHAR(100),
@@ -54,7 +57,6 @@ FOREIGN KEY (Item_ID) REFERENCES Inventory_items(Item_ID)
 CREATE TABLE Sales(
 Sale_ID INT UNSIGNED AUTO_INCREMENT,
 Branch_ID SMALLINT UNSIGNED NOT NULL,
-Sale_price DECIMAL (6,2) NOT NULL,
 Sale_date_time TIMESTAMP NOT NULL,
 Is_card_payment BOOL NOT NULL,
 PRIMARY KEY (Sale_ID),
@@ -79,7 +81,8 @@ Branch_ID SMALLINT UNSIGNED NOT NULL,
 Item_quantity SMALLINT UNSIGNED NOT NULL,
 PRIMARY KEY (Stock_ID),
 FOREIGN KEY (Item_ID) REFERENCES Inventory_items(Item_ID),
-FOREIGN KEY (Branch_ID) REFERENCES Branches(Branch_ID)
+FOREIGN KEY (Branch_ID) REFERENCES Branches(Branch_ID),
+UNIQUE(Item_ID, Branch_ID)
 );
 
 -- Table storing the ingredients required to make 1 of a product
@@ -92,41 +95,62 @@ FOREIGN KEY (Ingredient_ID) REFERENCES Inventory_items(Item_ID),
 FOREIGN KEY (Product_ID) REFERENCES Products(Product_ID)
 );
 
--- View for cost of deliveries in this month and future months
-Create VIEW Delivery_cost_current_future_months AS
-SELECT D.Delivery_ID, Sum_cost.Delivery_cost_sum FROM Deliveries AS D
-INNER JOIN (
-SELECT SUM(Item_cost * Item_quantity) AS Delivery_cost_sum, Ditems.Delivery_ID FROM Delivery_items AS Ditems
-INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Ditems.Item_ID 
-GROUP BY Delivery_ID
-) AS Sum_cost ON Sum_cost.Delivery_ID = D.Delivery_ID
-WHERE YEAR(Delivery_date_time) * 100 + MONTH(Delivery_date_time) >= YEAR(CURDATE()) * 100 + MONTH(CURDATE())
-ORDER BY Delivery_ID;
--- Deliveries filtered by date to find deliveries in curent or future months then delivery cost summed within subquery using sum and groupby on Item_cost * Item_quantity
+/*Role creation
+--------------------------------------------------------------*/
+-- Roles to be used as templates for user accounts
+-- User accounts must be linked to a host at a location
+/*Roles
+Baker
+Delivery_driver
+Shop assistant
+Till
+*/
+-- Manager account permissions must be asigned bespokley around role specifics
 
-CREATE TABLE Delivery_cost_past_months(
-Delivery_ID MEDIUMINT UNSIGNED,
-Delivery_cost DECIMAL(8,2),
-PRIMARY KEY(Delivery_ID),
-FOREIGN KEY (Delivery_ID) REFERENCES Deliveries(Delivery_ID)
-);
+-- Baker
+CREATE ROLE 'Baker';
+GRANT SELECT ON Bakery_stock.Deliveries TO 'Baker';
+GRANT SELECT ON Bakery_stock.Delivery_items TO 'Baker';
+GRANT UPDATE ON Bakery_stock.Delivery_items TO 'Baker';
+GRANT INSERT ON Bakery_stock.Delivery_items TO 'Baker';
+GRANT DELETE ON Bakery_stock.Delivery_items TO 'Baker';
+GRANT SELECT ON Bakery_stock.Inventory_items TO 'Baker';
+GRANT SELECT ON Bakery_stock.Products TO 'Baker';
+GRANT SELECT ON Bakery_stock.Item_stock TO 'Baker';
+GRANT UPDATE ON Bakery_stock.Item_stock TO 'Baker';
+GRANT INSERT ON Bakery_stock.Item_stock TO 'Baker';
+GRANT SELECT ON Bakery_stock.Product_ingredients TO 'Baker';
 
--- View for cost of sales in this month and future months
-Create VIEW Sale_cost_current_future_months AS
-SELECT S.Sale_ID, Sum_cost.Sale_cost_sum FROM Sales AS S
-INNER JOIN (
-SELECT SUM(Iitems.Item_cost * Sproducts.Product_quantity) AS Sale_cost_sum, Sproducts.Sale_ID FROM Sale_products AS Sproducts
-INNER JOIN Products AS P ON P.Product_ID = Sproducts.Product_ID
-INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = P.Item_ID
-GROUP BY Sale_ID
-) AS Sum_cost ON Sum_cost.Sale_ID = S.Sale_ID
-WHERE YEAR(Sale_date_time) * 100 + MONTH(Sale_date_time) >= YEAR(CURDATE()) * 100 + MONTH(CURDATE())
-ORDER BY Sale_ID;
--- Sales filtered by date to find sales in curent or future months then sale cost summed within subquery using sum and groupby on Sale_cost * Product_quantity
+-- Delivery_driver
+CREATE ROLE 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Branches TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Deliveries TO 'Delivery_driver';
+GRANT UPDATE ON Bakery_stock.Deliveries TO 'Delivery_driver';
+GRANT INSERT ON Bakery_stock.Deliveries TO 'Delivery_driver';
+GRANT DELETE ON Bakery_stock.Deliveries TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Delivery_items TO 'Delivery_driver';
+GRANT UPDATE ON Bakery_stock.Delivery_items TO 'Delivery_driver';
+GRANT INSERT ON Bakery_stock.Delivery_items TO 'Delivery_driver';
+GRANT DELETE ON Bakery_stock.Delivery_items TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Inventory_items TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Products TO 'Delivery_driver';
+GRANT SELECT ON Bakery_stock.Item_stock TO 'Delivery_driver';
 
-CREATE TABLE Sale_cost_past_months(
-Sale_ID INT UNSIGNED,
-Sale_cost DECIMAL(8,2),
-PRIMARY KEY(Sale_ID),
-FOREIGN KEY (Sale_ID) REFERENCES Sales(Sale_ID)
-);
+-- Shop_assistant
+CREATE ROLE 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Deliveries TO 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Delivery_items TO 'Shop_assistant';
+GRANT UPDATE ON Bakery_stock.Delivery_items TO 'Shop_assistant';
+GRANT INSERT ON Bakery_stock.Delivery_items TO 'Shop_assistant';
+GRANT DELETE ON Bakery_stock.Delivery_items TO 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Products TO 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Sales TO 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Sale_products TO 'Shop_assistant';
+GRANT SELECT ON Bakery_stock.Item_stock TO 'Shop_assistant';
+GRANT Update ON Bakery_stock.Item_stock TO 'Shop_assistant';
+GRANT INSERT ON Bakery_stock.Item_stock TO 'Shop_assistant';
+
+-- Till
+CREATE ROLE 'Till';
+GRANT INSERT ON Bakery_stock.Sales TO 'Till';
+GRANT INSERT ON Bakery_stock.Sale_products TO 'Till';
