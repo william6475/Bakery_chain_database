@@ -1,4 +1,6 @@
 -- Run the create file before executing
+-- Some test queries are comented out to prevent query tabs opening
+
 USE Bakery_stock;
 
 /* Test data insertion
@@ -2309,6 +2311,7 @@ INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES
 
 /*Deletion testing
 -------------------------------------------------------------------------------------------------------------------------*/
+-- Queries comented out to prevent onslaught of query tabs opening
 
 /*Hard deletes
 -----------------------------------------------------------------------------------*/
@@ -2418,4 +2421,282 @@ SELECT * FROM Products WHERE Item_ID = 11;
 SELECT * FROM Products WHERE Product_ID = 7;
 UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 7;
 SELECT * FROM Products WHERE Product_ID = 7;
+*/
+
+/*Testing with challenging charecters
+-------------------------------------------------------------------------------------------------------------------------*/
+
+/*Varchar fields
+-----------------------------------------------------------------------------------*/
+
+/*
+-- Branches.Branch_name, Branches.Branch_phone_number and Branches.Branch_city
+INSERT INTO Branches (Branch_name, Branch_phone_number, Branch_city) VALUES
+('--', '--', '--'),
+('/*', '/*', '/*'),
+('%', '%', '%'),
+('`', '`', '`'),
+('\\', '\\', '\\'),
+('"', '"', '"'),
+(';', ';', ';'),
+('#', '#', '#'),
+(')', ')', ')'),
+('(', '(', '('),
+('=', '=', '='),
+('+', '+', '+'),
+(',', ',', ','),
+('||', '||', '||'),
+('_', '_', '_'),
+('@', '@', '@'),
+('''', '''', ''''),
+('AND', 'AND', 'AND'),
+('OR', 'OR', 'OR'),
+('á', 'á', 'á');
+
+SELECT Branch_name, Branch_phone_number, Branch_city FROM Branches
+ORDER BY Branch_ID DESC
+LIMIT 20;
+
+-- Inventory_items.Item_name
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES
+('--', 1, 1), 
+('/*', 1, 1), 
+('%', 1, 1), 
+('`', 1, 1), 
+('\\', 1, 1), 
+('"', 1, 1), 
+(';', 1, 1), 
+('#', 1, 1), 
+(')', 1, 1), 
+('(', 1, 1), 
+('=', 1, 1), 
+('+', 1, 1), 
+(',', 1, 1), 
+('||', 1, 1), 
+('_', 1, 1), 
+('@', 1, 1), 
+('''', 1, 1), 
+('AND', 1, 1), 
+('OR', 1, 1), 
+('á', 1, 1);
+
+SELECT Item_name, Item_cost, Item_category FROM Inventory_items
+ORDER BY Item_ID DESC
+LIMIT 20;
+*/
+
+/* Challenging charecter after valid input (EG: '1 %' into int field) THROWS ERROR
+-----------------------------------------------------------------------------------*/
+/*
+-- Varchar
+INSERT INTO Branches (Branch_name, Branch_phone_number, Branch_city) VALUES
+('--', '--', '--'),
+('/*', '/*', '/*'),
+('%', '%', '%'),
+('`', '`', '`'),
+('\\', '\\', '\\'),
+('"', '"', '"'),
+(';', ';', ';'),
+('#', '#', '#'),
+(')', ')', ')'),
+('(', '(', '('),
+('=', '=', '='),
+('+', '+', '+'),
+(',', ',', ','),
+('||', '||', '||'),
+('_', '_', '_'),
+('@', '@', '@'),
+('''', '''', ''''),
+('AND', 'AND', 'AND'),
+('OR', 'OR', 'OR'),
+('á', 'á', 'á');
+
+SELECT Branch_name, Branch_phone_number, Branch_city FROM Branches
+ORDER BY Branch_ID DESC
+LIMIT 20;
+
+-- ID field
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1000 --', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1001 /*', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1002 %', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1003 `', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1004 \\', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1005 "', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1006 ;', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1007 #', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1008 )', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1009 (', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1010 =', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1011 +', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1012 +', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1013 ,', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1014 ||', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1015 _', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1016 @', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1017 ''', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1018 AND', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1019 OR', 1, 1, 1);
+INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1020 á', 1, 1, 1);
+
+SELECT Branch_ID FROM Branches
+ORDER BY Branch_ID DESC
+LIMIT 20;
+
+-- Intager field
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 --');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 /*');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 %');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 `');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 \\');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 "');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 ;');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 #');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 )');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 (');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 =');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 +');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 ,');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 ||');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 _');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 @');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 ''');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 AND');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 OR');
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES (1000, 1, '1 á');
+
+SELECT Item_quantity FROM Delivery_items
+ORDER BY Delivery_ID DESC
+LIMIT 20;
+
+-- Enum field
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product --');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product /*');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product %');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product `');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product \\');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product "');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product ;');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product #');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product )');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product (');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product =');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product +');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product ,');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product ||');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product _');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product @');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product ''');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product AND');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product OR');
+INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES ('1', '1', 'Product á');
+
+SELECT Item_category FROM Inventory_items
+ORDER BY Item_ID DESC
+LIMIT 20;
+
+-- Decimal field
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 --', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 /*', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 %', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 `', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 \\', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 "', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 ;', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 #', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 )', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 (', 'Cake')
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 =', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 +', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 ,', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 ||', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 _', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 @', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 ''', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 AND', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 OR', 'Cake');
+INSERT INTO Products (Item_ID, Product_price, Product_category) VALUES (1, '1.2 á', 'Cake');
+
+SELECT Product_price FROM Products
+ORDER BY Product_ID DESC
+LIMIT 20;
+
+-- Boolean field
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 --');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 /*');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 %');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 `');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 \\');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 "');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 ;');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 #');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 )');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 (');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 =');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 +');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 ,');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 ||');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 _');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 @');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 ''');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 AND');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 OR');
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity, Is_deleted) VALUES (1000, 1, 1, '1 á');
+
+
+SELECT Sale_ID, Is_deleted FROM Sale_products
+ORDER BY Sale_ID DESC
+LIMIT 20;
+
+-- Timestamp field
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 --', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 /*', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 %', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 `', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 \\', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 "', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 ;', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 #', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 )', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 (', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 =', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 +', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 ,', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 ||', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 _', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 @', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 ''', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 AND', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 OR', 1);
+INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES (1000, 1, '2001-01-22 12:33:11 á', 1);
+
+SELECT Sale_ID, Sale_date_time FROM Sales
+ORDER BY Sale_ID DESC
+LIMIT 20;
+*/
+
+/* Parameterized stored procedures callable by users
+-----------------------------------------------------------------------------------*/
+
+/*
+-- Products made
+CALL Products_made ('1 --', '1 --', '1 --');
+CALL Products_made ('1 /*', '1 /*', '1 /*');
+CALL Products_made ('1 %', '1 %', '1 %');
+CALL Products_made ('1 `', '1 `', '1 `');
+CALL Products_made ('1 \\', '1 \\', '1 \\');
+CALL Products_made ('1 "', '1 "', '1 "');
+CALL Products_made ('1 ;', '1 ;', '1 ;');
+CALL Products_made ('1 #', '1 #', '1 #');
+CALL Products_made ('1 )', '1 )', '1 )');
+CALL Products_made ('1 (', '1 (', '1 (');
+CALL Products_made ('1 =', '1 =', '1 =');
+CALL Products_made ('1 +', '1 +', '1 +');
+CALL Products_made ('1 ,', '1 ,', '1 ,');
+CALL Products_made ('1 ||', '1 ||', '1 ||');
+CALL Products_made ('1 _', '1 _', '1 _');
+CALL Products_made ('1 @', '1 @', '1 @');
+CALL Products_made ('1 ''', '1 ''', '1 ''');
+CALL Products_made ('1 AND', '1 AND', '1 AND');
+CALL Products_made ('1 OR', '1 OR', '1 OR');
+CALL Products_made ('1 á', '1 á', '1 á');
 */
