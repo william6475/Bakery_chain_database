@@ -2,7 +2,7 @@
 USE Bakery_stock;
 
 /* Views and materialised tables
--------------------------------------------------------------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Delivery cost (View for curent/future months and table for past months)
 -----------------------------------------------------*/
@@ -140,32 +140,29 @@ END $$
 DELIMITER ;
 
 /* Stored procedures to be called by users
--------------------------------------------------------------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------------------------------------------*/
 
 -- Stored procedure to deduct ingredients from stock once products made
 DELIMITER $$
 CREATE PROCEDURE Products_made(
-IN Branch_ID SMALLINT UNSIGNED,
-IN Product_ID SMALLINT UNSIGNED,
-IN Quantity_made SMALLINT UNSIGNED
+IN Param_branch_ID SMALLINT UNSIGNED,
+IN Param_product_ID SMALLINT UNSIGNED,
+IN Param_quantity_made SMALLINT UNSIGNED
 )
 BEGIN
--- Deduct the ingredients used from the branch's stock
 UPDATE Item_stock AS Istock
-INNER JOIN (-- Finds the quantity of ingredients it takes to make the given quantity of the given product
-	SELECT Iitems.Item_ID, Iitems.Item_name, Pingredients.Ingredient_quantity * Quantity_made AS Ingredients_used FROM Inventory_items AS Iitems
-	INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
-	WHERE Pingredients.Product_ID = Product_ID
-) AS Ingredient_usage_information ON Istock.Item_ID = Ingredient_usage_information.Item_ID
-SET Istock.Item_quantity = Istock.Item_quantity - Ingredient_usage_information.Ingredients_used
-WHERE Istock.Branch_ID = Branch_ID;
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
+SET Istock.Item_quantity = GREATEST(CAST(Istock.Item_quantity AS SIGNED) - (CAST(Param_quantity_made AS SIGNED) * CAST(Pingredients.Ingredient_quantity AS SIGNED)), 0)
+WHERE Param_branch_ID = Istock.Branch_ID AND Pingredients.Product_ID = Param_product_ID;
+SELECT Istock.Stock_ID, GREATEST(CAST(Istock.Item_quantity AS SIGNED) - (CAST(Param_quantity_made AS SIGNED) * CAST(Pingredients.Ingredient_quantity AS SIGNED)), 0) FROM Item_stock AS Istock INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID WHERE Param_branch_ID = Istock.Branch_ID AND Pingredients.Product_ID = Param_product_ID;
 END $$
 DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE Bakery_stock.Products_made TO 'Baker';
 
 /* Stock managment automation
--------------------------------------------------------------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Triggers to add delivered items to Item_stock once a delivery is delivered
 -----------------------------------------------------*/
@@ -221,7 +218,7 @@ IF NEW.Item_quantity <> OLD.Item_quantity
 		FROM Deliveries AS D
         WHERE D.Delivery_ID = NEW.Delivery_ID
 		ON DUPLICATE KEY
-		UPDATE Item_stock.Item_quantity = Item_stock.Item_quantity + (NEW.Item_quantity - OLD.Item_quantity);
+		UPDATE Item_stock.Item_quantity = GREATEST(CAST(Item_stock.Item_quantity AS SIGNED) + (CAST(NEW.Item_quantity AS SIGNED) - CAST(OLD.Item_quantity AS SIGNED)) , 0);
     
     -- If Item_quantity decreased
     ELSEIF NEW.Item_quantity < OLD.Item_quantity
@@ -230,7 +227,7 @@ IF NEW.Item_quantity <> OLD.Item_quantity
 		FROM Deliveries AS D
         WHERE D.Delivery_ID = NEW.Delivery_ID
 		ON DUPLICATE KEY
-		UPDATE Item_stock.Item_quantity = Item_stock.Item_quantity - (OLD.Item_quantity - NEW.Item_quantity);
+		UPDATE Item_stock.Item_quantity = GREATEST(CAST(Item_stock.Item_quantity AS SIGNED) - (CAST(OLD.Item_quantity AS SIGNED) - CAST(NEW.Item_quantity AS SIGNED)), 0);
     END IF;
 END IF;
 END $$
@@ -239,6 +236,7 @@ DELIMITER ;
 /*Trigger to deduct products from Inventory_stock once they have been sold
 -----------------------------------------------------*/
 
+-- Deducts Sale_products from stock (Sold items)
 DELIMITER $$
 CREATE TRIGGER Deduct_sale_stock
 AFTER INSERT ON Sale_products
@@ -247,15 +245,14 @@ BEGIN
 UPDATE Item_stock AS Istock
 INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
 INNER JOIN Products AS P ON P.item_ID = Iitems.Item_ID
-INNER JOIN Sale_products AS Sproducts ON Sproducts.Product_ID = P.Product_ID
-SET Istock.Item_quantity = Istock.Item_quantity - Sproducts.Product_quantity
-WHERE NEW.Sale_ID = Sproducts.Sale_ID;
+INNER JOIN Sale_Products AS Sproducts ON Sproducts.Product_ID = P.Product_ID
+SET Item_quantity = GREATEST(CAST(Istock.Item_quantity AS SIGNED) - CAST(NEW.Product_quantity AS SIGNED), 0)
+WHERE Sproducts.Product_ID = NEW.Product_ID;
 END $$
 DELIMITER ;
 
 /*Deletion managment
--------------------------------------------------------------------------------------------------------------------------*/
-
+------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Manualy cascading deletes
 -----------------------------------------------------*/
@@ -308,7 +305,7 @@ DELIMITER ;
 
 -- Restores sale_product records when the corresponding sale is restored
 DELIMITER $$
-CREATE TRIGGER Restore_sale_products
+CREATE TRIGGER Restore_sale_product
 AFTER UPDATE ON Sales
 FOR EACH ROW
 BEGIN

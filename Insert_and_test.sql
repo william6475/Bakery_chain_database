@@ -4,7 +4,7 @@
 USE Bakery_stock;
 
 /* Test data insertion
--------------------------------------------------------------------------------------------------------------------------*/
+------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Test data for Inventory_items
 -----------------------------------------------------------------------------------*/
@@ -305,7 +305,7 @@ INSERT INTO Product_ingredients (Product_ID, Ingredient_ID, Ingredient_quantity)
 (6,155,189),
 (34,75,626),
 (22,156,162),
-(1,52,561),
+(1,52,20),
 (27,133,624),
 (25,111,481),
 (18,120,444),
@@ -476,7 +476,7 @@ INSERT INTO Product_ingredients (Product_ID, Ingredient_ID, Ingredient_quantity)
 (44,140,470),
 (34,72,206),
 (20,98,282),
-(1,189,347),
+(1,189,23),
 (45,143,631),
 (44,96,345),
 (16,95,652),
@@ -548,20 +548,20 @@ INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES
 (2,16,'2019-07-08',1),
 (3,20,'2025-05-31',0),
 (4,3,'2025-11-21',0),
-(5,8,'2019-10-18',0),
+(5,8,'2025-12-21',0),
 (6,16,'1973-09-26',0),
 (7,5,'1985-12-18',1),
 (8,16,'2005-02-21',0),
 (9,18,'2025-12-07',0),
-(10,15,'1973-09-28',0),
+(10,15,'2025-12-21',0),
 (11,13,'2025-11-15',0),
-(12,17,'2025-12-07',1),
+(12,17,'2025-12-21',1),
 (13,14,'2000-01-10',0),
-(14,15,'2025-12-07',1),
+(14,15,'2026-01-21',1),
 (15,11,'2026-01-01',0),
 (16,11,'2023-12-04',0),
-(17,13,'2025-11-12',1),
-(18,19,'2026-01-01',0),
+(17,13,'2026-01-21',1),
+(18,19,'2026-01-21',0),
 (19,13,'2026-01-01',0),
 (20,15,'2025-11-06',0),
 (21,3,'2025-11-08',1),
@@ -574,11 +574,11 @@ INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES
 (28,11,'1970-02-08',0),
 (29,2,'2011-09-08',0),
 (30,8,'1990-08-03',1),
-(31,13,'1970-03-27',1),
+(31,13,'2026-02-21',1),
 (32,19,'1976-11-19',1),
 (33,14,'1975-11-25',1),
 (34,13,'2004-02-05',1),
-(35,13,'2018-07-25',0),
+(35,13,'2026-02-21',0),
 (36,7,'1978-11-03',0),
 (37,9,'2025-12-07',1),
 (38,15,'1971-08-17',1),
@@ -586,13 +586,13 @@ INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment) VALUES
 (40,19,'1994-02-13',1),
 (41,3,'1983-04-27',0),
 (42,18,'1977-05-03',0),
-(43,7,'2001-08-05',1),
+(43,7,'2026-02-21',1),
 (44,17,'2018-11-22',1),
-(45,16,'2024-10-26',1),
+(45,16,'2026-03-21',1),
 (46,20,'2024-07-22',0),
 (47,13,'1989-03-12',1),
-(48,14,'1995-02-12',0),
-(49,1,'1984-12-16',1),
+(48,14,'2026-03-21',0),
+(49,1,'2026-03-21',1),
 (50,14,'1973-01-02',0),
 (51,4,'1986-05-29',1),
 (52,8,'2020-07-04',1),
@@ -1205,7 +1205,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (51,124,14,267),
 (52,139,4,4),
 (53,163,7,19),
-(54,92,18,487),
+(54,20,1,487),
 (55,31,5,459),
 (56,108,15,394),
 (57,193,2,14),
@@ -1227,7 +1227,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (73,171,6,470),
 (74,153,6,284),
 (75,150,17,332),
-(76,107,13,245),
+(76,107,8,245),
 (77,193,16,100),
 (78,115,5,452),
 (79,63,4,65),
@@ -1312,7 +1312,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (158,148,8,226),
 (159,55,6,422),
 (160,2,19,280),
-(161,170,10,471),
+(161,30,10,471),
 (162,127,6,32),
 (163,161,6,472),
 (164,100,11,357),
@@ -1345,7 +1345,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (191,161,10,221),
 (192,60,15,230),
 (193,177,20,26),
-(194,54,8,171),
+(194,111,18,171),
 (195,167,13,29),
 (196,186,20,198),
 (197,161,2,52),
@@ -1483,7 +1483,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (330,144,15,397),
 (331,61,8,396),
 (332,16,6,416),
-(333,3,7,366),
+(333,3,8,366),
 (334,194,1,419),
 (335,88,18,363),
 (336,26,14,94),
@@ -1506,7 +1506,7 @@ INSERT INTO Item_stock (Stock_ID, Item_ID, Branch_ID, Item_quantity) VALUES
 (353,54,4,357),
 (354,66,10,278),
 (355,187,11,418),
-(356,130,10,417),
+(356,130,8,417),
 (357,79,4,22),
 (358,196,20,289),
 (359,193,9,100),
@@ -2423,12 +2423,200 @@ UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 7;
 SELECT * FROM Products WHERE Product_ID = 7;
 */
 
-/*Testing with challenging charecters
--------------------------------------------------------------------------------------------------------------------------*/
+/*Testing callable stored procedures
+------------------------------------------------------------------------------------------------------------------------------*/
 
-/*Varchar fields
+-- Products_made (Deducts ingredients used to make products)
+/*
+-- Valid data
+SELECT * FROM Product_ingredients WHERE Product_ID = 1;
+SELECT Istock.Branch_ID, Pingredients.Product_ID, Pingredients.Ingredient_ID, Pingredients.Ingredient_quantity, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
+WHERE Pingredients.Product_ID = 1 AND Istock.Branch_ID = 1;
+CALL Products_made(1, 1, 3);
+SELECT Istock.Branch_ID, Pingredients.Product_ID, Pingredients.Ingredient_ID, Pingredients.Ingredient_quantity, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
+WHERE Pingredients.Product_ID = 1 AND Istock.Branch_ID = 1;
+*/
+
+/*Testing triggers
+------------------------------------------------------------------------------------------------------------------------------*/
+
+-- Add_delivered_delivery_stock (Adds corresponding Delivery_items to stock)
+/*
+-- Valid cause for trigger (With existant and non-existant stock records)
+SELECT * FROM Delivery_items WHERE Delivery_ID = 33;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 33 AND Istock.Branch_ID = 8;
+UPDATE Deliveries
+SET Is_delivered = TRUE WHERE Delivery_ID = 33;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 33 AND Istock.Branch_ID = 8;
+
+-- Invalid cause for trigger(No change to Is_delivered)
+SELECT * FROM Delivery_items WHERE Delivery_ID = 33;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 33 AND Istock.Branch_ID = 8;
+UPDATE Deliveries
+SET Delivery_date_time = '1981-02-22 15:06:25' WHERE Delivery_ID = 33;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 33 AND Istock.Branch_ID = 8;
+*/
+
+-- Add_delivery_stock_insert (Adds delivery stock from inserted delivery_items record with corresponding delivered delivery)
+/*
+-- Valid cause for trigger
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Item_ID = 25 AND Branch_ID = 18;
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity)
+VALUES (2, 25, 300);
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Item_ID = 25 AND Branch_ID = 18;
+
+-- Stock record doesn't yet exist (Should create new record)
+SELECT Istock.Stock_ID, Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Item_ID = 10;
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity)
+VALUES (2, 10, 300);
+SELECT Istock.Stock_ID, Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Item_ID = 10;
+
+-- Invalid cause for trigger (Corresponding delivery is not delivered)
+SELECT DISTINCT Istock.Stock_ID, Istock.Item_ID, Istock.Branch_ID FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 1 AND Branch_ID = 7;
+INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity)
+VALUES (1, 10, 300);
+SELECT DISTINCT Istock.Stock_ID, Istock.Item_ID, Istock.Branch_ID FROM Item_stock AS Istock
+INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
+INNER JOIN Delivery_items AS Ditems ON Ditems.Item_ID = Iitems.Item_ID
+WHERE Ditems.Delivery_ID = 1 AND Branch_ID = 7;
+*/
+
+-- Update_delivery_item_stock (Changes stock level when Item_quantity of delivered Delivery_item is updated)
+/*
+-- Valid cause for trigger
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Istock.Item_ID = 111;
+UPDATE Delivery_items
+SET Item_quantity = 1000 WHERE Delivery_ID = 2 AND Item_ID = 111;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Istock.Item_ID = 111;
+
+-- Larger reduction in item quantity to delivery_items record than is currently in stock at the corresponding branch (Stock level expected to be set to 0)
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Istock.Item_ID = 111;
+UPDATE Delivery_items
+SET Item_quantity = 0 WHERE Delivery_ID = 2 AND Item_ID = 111;
+SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
+WHERE Istock.Branch_ID = 18 AND Istock.Item_ID = 111;
+*/
+
+-- Deduct_sale_stock (Deducts inserted Sale_product's Item_quantity from stock)
+/*
+-- Valid data
+SELECT Item_ID, Branch_ID, Item_quantity FROM Item_stock
+WHERE Item_ID = 30 AND Branch_ID = 10;
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity)
+VALUES (1, 20, 10);
+SELECT Item_ID, Branch_ID, Item_quantity FROM Item_stock
+WHERE Item_ID = 30 AND Branch_ID = 10;
+
+-- Sale containing more of an item that is in stock at a branch (Stock level expected to be set to 0)
+DELETE FROM Sale_products WHERE Sale_ID = 1 AND Product_ID = 20;
+SELECT Item_ID, Branch_ID, Item_quantity FROM Item_stock
+WHERE Item_ID = 30 AND Branch_ID = 10;
+INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity)
+VALUES (1, 20, 500);
+SELECT Item_ID, Branch_ID, Item_quantity FROM Item_stock
+WHERE Item_ID = 30 AND Branch_ID = 10;
+*/
+
+-- Delete_sale_products (Cascade deletes Sale_products from Sale soft delete)
+/*
+-- Valid data
+SELECT * FROM Sale_products WHERE Sale_ID = 1;
+UPDATE Sales SET Is_deleted = TRUE
+WHERE Sale_ID = 1;
+SELECT * FROM Sale_products WHERE Sale_ID = 1;
+
+-- Invalid cause for trigger (Update to Sale record without soft delete)
+SELECT * FROM Sale_products WHERE Sale_ID = 6;
+UPDATE Sales SET Sale_date_time = '1973-09-5'
+WHERE Sale_ID = 6;
+SELECT * FROM Sale_products WHERE Sale_ID = 6;
+*/
+
+-- Delete_product (Soft deletes a product when its corresponding Inventory_items record is deleted)
+/*
+-- Valid data
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
+UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 1;
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
+
+-- Inventory_item record updated without soft deletion
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
+UPDATE Inventory_items SET Item_name = 'Hello' WHERE Item_ID = 17;
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
+*/
+
+-- Restore_sale_product (Restores Sale_product records when the corresponding sale is restored)
+/*
+-- Valid data
+UPDATE Sales SET Is_deleted = TRUE
+WHERE Sale_ID = 1;
+SELECT * FROM Sale_products WHERE Sale_ID = 1;
+UPDATE Sales SET Is_deleted = FALSE
+WHERE Sale_ID = 1;
+SELECT * FROM Sale_products WHERE Sale_ID = 1;
+
+-- Sale updated without restoration
+SELECT * FROM Sale_products WHERE Sale_ID = 6;
+UPDATE Sales SET Sale_date_time = '1973-09-5'
+WHERE Sale_ID = 6;
+SELECT * FROM Sale_products WHERE Sale_ID = 6;
+*/
+
+-- Restore_product (Restores product when the corresponding Inventory_item record is restored)
+/*
+-- Valid data
+UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 1;
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
+UPDATE Inventory_items SET Is_deleted = FALSE WHERE Item_ID = 1;
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
+
+-- Inventory item updated without restoration
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
+UPDATE Inventory_items SET Item_name = 'Hello' WHERE Item_ID = 17;
+SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
+*/
+
+-- Prevent_product_deletion (Prevents product deletion excluding form permited triggers)
+/*
+-- Atempt to soft delete a product (Should be blocked)
+SELECT Product_ID, Is_deleted FROM Products WHERE Product_ID = 24;
+UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 24;
+SELECT Product_ID, Is_deleted FROM Products WHERE Product_ID = 24;
+*/
+
+/*Testing with challenging charecters
+------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Valid insertions
 -----------------------------------------------------------------------------------*/
 
+-- Varchar
 /*
 -- Branches.Branch_name, Branches.Branch_phone_number and Branches.Branch_city
 INSERT INTO Branches (Branch_name, Branch_phone_number, Branch_city) VALUES
@@ -2457,63 +2645,9 @@ SELECT Branch_name, Branch_phone_number, Branch_city FROM Branches
 ORDER BY Branch_ID DESC
 LIMIT 20;
 
--- Inventory_items.Item_name
-INSERT INTO Inventory_items (Item_name, Item_cost, Item_category) VALUES
-('--', 1, 1), 
-('/*', 1, 1), 
-('%', 1, 1), 
-('`', 1, 1), 
-('\\', 1, 1), 
-('"', 1, 1), 
-(';', 1, 1), 
-('#', 1, 1), 
-(')', 1, 1), 
-('(', 1, 1), 
-('=', 1, 1), 
-('+', 1, 1), 
-(',', 1, 1), 
-('||', 1, 1), 
-('_', 1, 1), 
-('@', 1, 1), 
-('''', 1, 1), 
-('AND', 1, 1), 
-('OR', 1, 1), 
-('á', 1, 1);
-
-SELECT Item_name, Item_cost, Item_category FROM Inventory_items
-ORDER BY Item_ID DESC
-LIMIT 20;
-*/
-
-/* Challenging charecter after valid input (EG: '1 %' into int field) THROWS ERROR
+/* Challenging charecter in input after valid input (Throws error)
 -----------------------------------------------------------------------------------*/
 /*
--- Varchar
-INSERT INTO Branches (Branch_name, Branch_phone_number, Branch_city) VALUES
-('--', '--', '--'),
-('/*', '/*', '/*'),
-('%', '%', '%'),
-('`', '`', '`'),
-('\\', '\\', '\\'),
-('"', '"', '"'),
-(';', ';', ';'),
-('#', '#', '#'),
-(')', ')', ')'),
-('(', '(', '('),
-('=', '=', '='),
-('+', '+', '+'),
-(',', ',', ','),
-('||', '||', '||'),
-('_', '_', '_'),
-('@', '@', '@'),
-('''', '''', ''''),
-('AND', 'AND', 'AND'),
-('OR', 'OR', 'OR'),
-('á', 'á', 'á');
-
-SELECT Branch_name, Branch_phone_number, Branch_city FROM Branches
-ORDER BY Branch_ID DESC
-LIMIT 20;
 
 -- ID field
 INSERT INTO Branches (Branch_ID, Branch_name, Branch_phone_number, Branch_city) VALUES  ('1000 --', 1, 1, 1);
