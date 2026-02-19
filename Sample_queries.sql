@@ -23,14 +23,10 @@ AND S.Is_deleted IS NULL OR S.Is_deleted = 0
 AND Branch_ID = 13;
 -- Sums the sale costs from the Sale_cost_past_months table where the date is a month before the current month
 
--- How long until the next delivery is due to stock a given item?
+-- When is the next delivery which is due to stock a given item?
 SELECT MIN(Delivery_date_time) AS Delivery_date FROM Deliveries
 WHERE NOW() < Delivery_date_time
 AND Branch_ID = 13;
-
--- What is the name of a branch given only part of it?
-SELECT Branch_name FROM Branches
-WHERE Branch_name LIKE '%dian%';
 
 -- What is a given products monthly sales?
 SELECT DATE_FORMAT(S.Sale_date_time, '%Y-%M') AS Year_and_month, SUM(Sproducts.Product_quantity) AS Monthly_sales
@@ -54,11 +50,10 @@ RIGHT JOIN (
 	INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
 	WHERE Pingredients.Product_ID = 35 																-- Product_ID goes here
 ) AS Product_required_ingredients ON Product_required_ingredients.Item_ID = Istock.Item_ID
-WHERE Istock.Branch_ID = 2 																			-- Branch_ID goes here
-ORDER BY Istock.Item_ID;
+WHERE Istock.Branch_ID = 2;																		    -- Branch_ID goes here
 /*Finds the amount of each ingredient required to make 1 of the given product within the subquery
 then finds how much of these ingredients a given branch has in stock
-Then divides the amount of ingredients in stock by the reqruied ingredients*/
+Then divides the amount of ingredients in stock by the required ingredients*/
 
 -- Insert sale information after sale (Automatically deducts sold products from stock (Via Deduct_sale_stock trigger))
 INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment)
@@ -75,11 +70,11 @@ SELECT * FROM Deliveries WHERE Delivery_ID = 9;
 
 -- Deduct sold items from stock (Via Deduct_sale_stock trigger)
 INSERT INTO Sales (Sale_ID, Branch_ID, Sale_date_time, Is_card_payment)
-VALUES (1000 ,17, '1992-06-06 12:21:34', 1);
+VALUES (1010 ,17, '1992-06-06 12:21:34', 1);
 -- SELECT * FROM Sales WHERE Sale_ID = 1000;
 -- SELECT * FROM Item_stock WHERE Branch_ID = 19 AND Item_ID = 12;
 INSERT INTO Sale_products (Sale_ID, Product_ID, Product_quantity)
-VALUES (1000, 12, 17);
+VALUES (1010, 12, 17);
 -- SELECT * FROM Item_stock WHERE Branch_ID = 19 AND Item_ID = 12;
 
 -- Deduct used ingredients from stock (Via Products_made stored procedure)

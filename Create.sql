@@ -1,3 +1,10 @@
+/*
+File contents:
+-Table creation statements
+-Role creation
+-User account creation
+*/
+
 /* Run this code if MYSQL version below 8.4.4
 INSTALL COMPONENT 'file://component_validate_password'; -- Enforces password strength requirements
 */
@@ -5,7 +12,7 @@ INSTALL COMPONENT 'file://component_validate_password'; -- Enforces password str
 CREATE DATABASE Bakery_stock;
 USE Bakery_stock;
 
-/* Table creation statments
+/* Table creation statements
 --------------------------------------------------------------*/
 
 -- Table storing branches of the bakery chain
@@ -14,7 +21,7 @@ Branch_ID SMALLINT UNSIGNED AUTO_INCREMENT,
 Branch_name VARCHAR(100) NOT NULL,
 Branch_phone_number VARCHAR(15),
 Branch_city VARCHAR(50),
-Is_deleted Bool NOT NULL DEFAULT 0 NOT NULL,
+Is_deleted Bool NOT NULL DEFAULT 0,
 PRIMARY KEY (Branch_ID)
 );
 
@@ -55,7 +62,7 @@ Item_ID SMALLINT UNSIGNED UNIQUE NOT NULL,
 Product_category ENUM('Cake', 'Bread', 'Pastry', 'Other') NOT NULL,
 Product_price DECIMAL(6,2) NOT NULL,
 Product_shelf_life_seconds MEDIUMINT UNSIGNED NOT NULL,
-Is_deleted Bool NOT NULL DEFAULT 0, -- Only changable through marking an inventory_item as deleted
+Is_deleted Bool NOT NULL DEFAULT 0, -- Only changeable through marking an inventory_item as deleted
 PRIMARY KEY(Product_ID),
 FOREIGN KEY (Item_ID) REFERENCES Inventory_items(Item_ID)
 );
@@ -113,7 +120,7 @@ Delivery_driver
 Shop assistant
 Till
 */
--- Manager account permissions must be asigned bespokley around role specifics
+-- Manager account permissions must be bespoke around managerial role specifics
 
 -- Baker
 CREATE ROLE IF NOT EXISTS 'Baker';
@@ -166,7 +173,7 @@ GRANT INSERT ON Bakery_stock.Sale_products TO 'Till';
 /*User account creation
 --------------------------------------------------------------*/
 -- User accounts must be linked to a host at a location
--- Passwords are rejected if they are shorter than 8 charecters or do not have 1 numeric, 1 lowercase, 1 upercase and 1 special charecter
+-- Passwords are rejected if they are shorter than 8 characters or do not have 1 numeric, 1 lowercase, 1 uppercase and 1 special character
 
 -- Example account 1
 CREATE USER IF NOT EXISTS 'BobbyM'@'localhost' IDENTIFIED BY 'Gr2n2r9*L02f';

@@ -1,5 +1,14 @@
 -- Run the create file before executing
--- Some test queries are comented out to prevent query tabs opening
+-- Some test queries are commented out to prevent query tabs opening
+
+/*
+File contents:
+-Test data insertion
+-Deletion tests
+-Callable stored procedure tests
+-Trigger tests
+-Testing with challenging characters
+*/
 
 USE Bakery_stock;
 
@@ -2309,9 +2318,9 @@ INSERT INTO Delivery_items (Delivery_ID, Item_ID, Item_quantity) VALUES
 (199,47,218),
 (200,41,332);
 
-/*Deletion testing
+/*Deletion tests
 -------------------------------------------------------------------------------------------------------------------------*/
--- Queries comented out to prevent onslaught of query tabs opening
+-- Queries commented out to prevent onslaught of query tabs opening
 
 /*Hard deletes
 -----------------------------------------------------------------------------------*/
@@ -2326,6 +2335,7 @@ SELECT COUNT(*) FROM Delivery_items;
 
 /* Deliveries
 DELETE FROM Delivery_items WHERE Delivery_ID = 25;
+DELETE FROM Delivery_cost_past_months WHERE Delivery_ID = 25;
 Select * FROM Deliveries WHERE Delivery_ID = 25;
 SELECT COUNT(*) FROM Deliveries;
 DELETE FROM Deliveries WHERE Delivery_ID = 25;
@@ -2364,9 +2374,9 @@ UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 32;
 SELECT * FROM Inventory_items WHERE Item_ID = 32;
 */
 
-/* Products
+/* Products (Must be through corresponding Inventory_item record)
 SELECT * FROM Products WHERE Product_ID = 1;
-UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 1;
+UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 20;
 SELECT * FROM Products WHERE Product_ID = 1;
 */
 
@@ -2423,7 +2433,7 @@ UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 7;
 SELECT * FROM Products WHERE Product_ID = 7;
 */
 
-/*Testing callable stored procedures
+/*Callable stored procedure tests
 ------------------------------------------------------------------------------------------------------------------------------*/
 
 -- Products_made (Deducts ingredients used to make products)
@@ -2441,12 +2451,12 @@ INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = I
 WHERE Pingredients.Product_ID = 1 AND Istock.Branch_ID = 1;
 */
 
-/*Testing triggers
+/*Trigger tests
 ------------------------------------------------------------------------------------------------------------------------------*/
 
 -- Add_delivered_delivery_stock (Adds corresponding Delivery_items to stock)
 /*
--- Valid cause for trigger (With existant and non-existant stock records)
+-- Valid cause for trigger (With existent and non-existent stock records)
 SELECT * FROM Delivery_items WHERE Delivery_ID = 33;
 SELECT Istock.Item_ID, Istock.Branch_ID, Istock.Item_quantity FROM Item_stock AS Istock
 INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
@@ -2565,7 +2575,7 @@ SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
 UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 1;
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
 
--- Inventory_item record updated without soft deletion
+-- Invalid cause for trigger (Inventory_item record updated without soft deletion)
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
 UPDATE Inventory_items SET Item_name = 'Hello' WHERE Item_ID = 17;
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
@@ -2582,6 +2592,8 @@ WHERE Sale_ID = 1;
 SELECT * FROM Sale_products WHERE Sale_ID = 1;
 
 -- Sale updated without restoration
+UPDATE Sales SET Is_deleted = TRUE
+WHERE Sale_ID = 6;
 SELECT * FROM Sale_products WHERE Sale_ID = 6;
 UPDATE Sales SET Sale_date_time = '1973-09-5'
 WHERE Sale_ID = 6;
@@ -2597,20 +2609,21 @@ UPDATE Inventory_items SET Is_deleted = FALSE WHERE Item_ID = 1;
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 2;
 
 -- Inventory item updated without restoration
+UPDATE Inventory_items SET Is_deleted = TRUE WHERE Item_ID = 17;
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
 UPDATE Inventory_items SET Item_name = 'Hello' WHERE Item_ID = 17;
 SELECT Product_ID, Item_ID, Is_deleted FROM Products WHERE Product_ID = 3;
 */
 
--- Prevent_product_deletion (Prevents product deletion excluding form permited triggers)
+-- Prevent_product_deletion (Prevents product deletion excluding form permitted triggers)
 /*
--- Atempt to soft delete a product (Should be blocked)
+-- Attempt to soft delete a product (Should be blocked)
 SELECT Product_ID, Is_deleted FROM Products WHERE Product_ID = 24;
 UPDATE Products SET Is_deleted = TRUE WHERE Product_ID = 24;
 SELECT Product_ID, Is_deleted FROM Products WHERE Product_ID = 24;
 */
 
-/*Testing with challenging charecters
+/*Testing with challenging characters
 ------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Valid insertions
@@ -2645,7 +2658,7 @@ SELECT Branch_name, Branch_phone_number, Branch_city FROM Branches
 ORDER BY Branch_ID DESC
 LIMIT 20;
 
-/* Challenging charecter in input after valid input (Throws error)
+/* Challenging character in input after valid input (Throws error)
 -----------------------------------------------------------------------------------*/
 /*
 

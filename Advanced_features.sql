@@ -1,10 +1,18 @@
 -- Run the Create and Insert files before executing
+/*
+File contents:
+-Views and materialised tables
+-Stored procedures to be called by users
+-Stock management automation
+-Deletion management
+*/
+
 USE Bakery_stock;
 
 /* Views and materialised tables
 ------------------------------------------------------------------------------------------------------------------------------*/
 
-/*Delivery cost (View for curent/future months and table for past months)
+/*Delivery cost (View for current/future months and table for past months)
 -----------------------------------------------------*/
 -- View for cost of deliveries in this month and future months
 Create VIEW Delivery_cost_current_future_months AS
@@ -16,7 +24,7 @@ INNER JOIN (
 ) AS Sum_cost ON Sum_cost.Delivery_ID = D.Delivery_ID
 WHERE YEAR(Delivery_date_time) * 100 + MONTH(Delivery_date_time) >= YEAR(CURDATE()) * 100 + MONTH(CURDATE())
 ORDER BY Delivery_ID;
--- Deliveries filtered by date to find deliveries in curent or future months then delivery cost summed within subquery using sum and groupby on Item_cost * Item_quantity
+-- Deliveries filtered by date to find deliveries in current or future months then delivery cost summed within subquery using sum and groupby on Item_cost * Item_quantity
 
 GRANT SELECT ON Bakery_stock.Delivery_cost_current_future_months TO 'Baker';
 GRANT SELECT ON Bakery_stock.Delivery_cost_current_future_months TO 'Delivery_driver';
@@ -61,7 +69,7 @@ ORDER BY Delivery_ID;
 END $$
 DELIMITER ;
 
--- An event to call the Monthly_delivery_cost stored procedure at the begining of each month
+-- An event to call the Monthly_delivery_cost stored procedure at the beginning of each month
 DELIMITER $$
 CREATE EVENT Insert_last_month_delivery_cost
 ON SCHEDULE EVERY 1 MONTH
@@ -72,11 +80,11 @@ CALL Monthly_delivery_cost;
 END $$
 DELIMITER ;
 
-/*Sale cost (View for curent/future months and table for past months)
+/*Sale cost (View for current/future months and table for past months)
 -----------------------------------------------------*/
 -- View for cost of sales in this month and future months
 Create VIEW Sale_cost_current_future_months AS
-SELECT S.Sale_ID, Sum_cost.`Sale_cost_sum` FROM Sales AS S
+SELECT S.Sale_ID, Sum_cost.Sale_cost_sum FROM Sales AS S
 INNER JOIN (
 	SELECT SUM(Iitems.Item_cost * Sproducts.Product_quantity) AS Sale_cost_sum, Sproducts.Sale_ID FROM Sale_products AS Sproducts
 	INNER JOIN Products AS P ON P.Product_ID = Sproducts.Product_ID
@@ -85,7 +93,7 @@ INNER JOIN (
 ) AS Sum_cost ON Sum_cost.Sale_ID = S.Sale_ID
 WHERE YEAR(Sale_date_time) * 100 + MONTH(Sale_date_time) >= YEAR(CURDATE()) * 100 + MONTH(CURDATE()) AND S.Is_deleted = FALSE
 ORDER BY Sale_ID;
--- Sales filtered by date to find sales in curent or future months then sale cost summed within subquery using sum and groupby on Sale_cost * Product_quantity
+-- Sales filtered by date to find sales in current or future months then sale cost summed within subquery using sum and groupby on Sale_cost * Product_quantity
 
 GRANT SELECT ON Bakery_stock.Sale_cost_current_future_months TO 'Shop_assistant';
 
@@ -128,7 +136,7 @@ ORDER BY Sale_ID;
 END $$
 DELIMITER ;
 
--- An event to call the Monthly_sales_cost stored procedure at the begining of each month
+-- An event to call the Monthly_sales_cost stored procedure at the beginning of each month
 DELIMITER $$
 CREATE EVENT Insert_last_month_sale_cost
 ON SCHEDULE EVERY 1 MONTH
@@ -155,13 +163,12 @@ INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID
 INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID
 SET Istock.Item_quantity = GREATEST(CAST(Istock.Item_quantity AS SIGNED) - (CAST(Param_quantity_made AS SIGNED) * CAST(Pingredients.Ingredient_quantity AS SIGNED)), 0)
 WHERE Param_branch_ID = Istock.Branch_ID AND Pingredients.Product_ID = Param_product_ID;
-SELECT Istock.Stock_ID, GREATEST(CAST(Istock.Item_quantity AS SIGNED) - (CAST(Param_quantity_made AS SIGNED) * CAST(Pingredients.Ingredient_quantity AS SIGNED)), 0) FROM Item_stock AS Istock INNER JOIN Inventory_items AS Iitems ON Iitems.Item_ID = Istock.Item_ID INNER JOIN Product_ingredients AS Pingredients ON Pingredients.Ingredient_ID = Iitems.Item_ID WHERE Param_branch_ID = Istock.Branch_ID AND Pingredients.Product_ID = Param_product_ID;
 END $$
 DELIMITER ;
 
 GRANT EXECUTE ON PROCEDURE Bakery_stock.Products_made TO 'Baker';
 
-/* Stock managment automation
+/* Stock management automation
 ------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Triggers to add delivered items to Item_stock once a delivery is delivered
@@ -175,7 +182,7 @@ FOR EACH ROW
 BEGIN
 IF NEW.Is_delivered <> OLD.Is_delivered AND NEW.Is_delivered = TRUE
 	THEN INSERT INTO Item_stock (Item_ID, Branch_ID, Item_quantity)
-    -- Subquery used so the data that failed to insert can be reused within the update under an aliaise
+    -- Subquery used so the data that failed to insert can be reused within the update under an alias
     SELECT * FROM(
 		SELECT Ditems.Item_ID, NEW.Branch_ID, Ditems.Item_quantity
 		FROM Delivery_items AS Ditems
@@ -251,13 +258,13 @@ WHERE Sproducts.Product_ID = NEW.Product_ID;
 END $$
 DELIMITER ;
 
-/*Deletion managment
+/*Deletion management
 ------------------------------------------------------------------------------------------------------------------------------*/
 
-/*Manualy cascading deletes
+/*Manually cascading deletes
 -----------------------------------------------------*/
 
--- Marks sale_product records as deleted (Soft delete) when the corresponding sale is marked as deleted
+-- Marks sale_product records as deleted (Soft delete) when the corresponding sale is soft deleted
 DELIMITER $$
 CREATE TRIGGER Delete_sale_products
 AFTER UPDATE ON Sales
@@ -288,6 +295,7 @@ IF NEW.Is_deleted <> OLD.Is_deleted AND NEW.Is_deleted = TRUE
 END IF;
 END $$
 DELIMITER ;
+
 -- Tells the Prevent_products_deletion trigger to allow the change to Product.Is_deleted as it is being performed by the Delete_product or Restore_product trigger
 DELIMITER $$
 CREATE TRIGGER Allow_delete_product
@@ -300,7 +308,7 @@ END IF;
 END $$
 DELIMITER ;
 
-/*Manualy cascading restore (soft un-delete)
+/*Manually cascading restore (soft un-delete)
 -----------------------------------------------------*/
 
 -- Restores sale_product records when the corresponding sale is restored
